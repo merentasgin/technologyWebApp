@@ -8,8 +8,9 @@ namespace technologyWebApp.Controllers
 {
     public class LogİnController : Controller
     {
+        
         // GET: Logİn
-        technologyWebSiteDBEntities entity = new technologyWebSiteDBEntities();
+        technologyWebSiteDBEntities1 entity1 = new technologyWebSiteDBEntities1();
 
 
         public ActionResult Index()
@@ -19,15 +20,16 @@ namespace technologyWebApp.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Index(string userName,string userPassword) {
+        public ActionResult Index(string userName, string userPassword)
+        {
 
-            var Users =(from u in entity.Users where u.usNickname==userName&&u.usPassword==userPassword select u).FirstOrDefault();
+            var Users = (from u in entity1.Users where u.usNickname == userName && u.usPassword == userPassword select u).FirstOrDefault();
             if (Users != null)
             {
 
-                Session["usName"] = Users.usName;
-                Session["usID"] = Users.usName;
-                Session["usType"] = Users.usName;
+                Session["usName"] = Users.usNickname;
+                Session["usID"] = Users.usID;
+                Session["usType"] = Users.usType;
 
                 switch (Users.usType)
                 {
@@ -50,5 +52,16 @@ namespace technologyWebApp.Controllers
 
 
         }
+        
+
+       
+
+
+
+
+
+
+
+
     }
 }

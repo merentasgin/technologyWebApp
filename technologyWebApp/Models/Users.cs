@@ -25,11 +25,11 @@ namespace technologyWebApp.Models
         public int usID { get; set; }
         public string usName { get; set; }
         public string usSurname { get; set; }
-        public bool usType { get; set; }
         public string usEmail { get; set; }
         public string usPassword { get; set; }
         public string usNickname { get; set; }
-        public byte[] usCreatedDate { get; set; }
+        public System.DateTime usCreatedDate { get; set; }
+        public Nullable<int> usType { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Address> Address { get; set; }
@@ -37,5 +37,6 @@ namespace technologyWebApp.Models
         public virtual ICollection<Cart> Cart { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Orders> Orders { get; set; }
+        public virtual loginType loginType { get; set; }
     }
 }

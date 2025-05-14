@@ -13,10 +13,10 @@ namespace technologyWebApp.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class technologyWebSiteDBEntities : DbContext
+    public partial class technologyWebSiteDBEntities1 : DbContext
     {
-        public technologyWebSiteDBEntities()
-            : base("name=technologyWebSiteDBEntities")
+        public technologyWebSiteDBEntities1()
+            : base("name=technologyWebSiteDBEntities1")
         {
         }
     
@@ -30,6 +30,7 @@ namespace technologyWebApp.Models
         public virtual DbSet<Cart> Cart { get; set; }
         public virtual DbSet<CartItem> CartItem { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
+        public virtual DbSet<loginType> loginType { get; set; }
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<Payments> Payments { get; set; }

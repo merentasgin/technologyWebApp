@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="technologyWebSiteDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="technologyWebSiteDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="addressID" />
@@ -45,6 +45,13 @@
           </Key>
           <Property Name="catID" Type="int" Nullable="false" />
           <Property Name="catName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="loginType">
+          <Key>
+            <PropertyRef Name="usType" />
+          </Key>
+          <Property Name="usType" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="typeName" Type="nvarchar" MaxLength="15" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderDetails">
           <Key>
@@ -104,11 +111,11 @@
           <Property Name="usID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="usName" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="usSurname" Type="nvarchar" MaxLength="25" Nullable="false" />
-          <Property Name="usType" Type="bit" Nullable="false" />
           <Property Name="usEmail" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="usPassword" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="usNickname" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="usCreatedDate" Type="timestamp" StoreGeneratedPattern="Computed" />
+          <Property Name="usCreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="usType" Type="int" />
         </EntityType>
         <Association Name="FK_Address_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -230,12 +237,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Users_loginType">
+          <End Role="loginType" Type="Self.loginType" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="loginType">
+              <PropertyRef Name="usType" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="usType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="technologyWebSiteDBModelStoreContainer">
           <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brands" EntityType="Self.Brands" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CartItem" EntityType="Self.CartItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="loginType" EntityType="Self.loginType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
@@ -282,9 +302,12 @@
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Products" EntitySet="Products" />
           </AssociationSet>
+          <AssociationSet Name="FK_Users_loginType" Association="Self.FK_Users_loginType">
+            <End Role="loginType" EntitySet="loginType" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="technologyWebSiteDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -335,6 +358,14 @@
           <Property Name="catID" Type="Int32" Nullable="false" />
           <Property Name="catName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Products" Relationship="Self.FK_Products_Categories" FromRole="Categories" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="loginType">
+          <Key>
+            <PropertyRef Name="usType" />
+          </Key>
+          <Property Name="usType" Type="Int32" Nullable="false" />
+          <Property Name="typeName" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="technologyWebSiteDBModel.FK_Users_loginType" FromRole="loginType" ToRole="Users" />
         </EntityType>
         <EntityType Name="OrderDetails">
           <Key>
@@ -404,14 +435,15 @@
           <Property Name="usID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="usName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="usSurname" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="usType" Type="Boolean" Nullable="false" />
           <Property Name="usEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="usPassword" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="usNickname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="usCreatedDate" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="usCreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="usType" Type="Int32" />
           <NavigationProperty Name="Address" Relationship="Self.FK_Address_Users" FromRole="Users" ToRole="Address" />
           <NavigationProperty Name="Cart" Relationship="Self.FK_Cart_Users" FromRole="Users" ToRole="Cart" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Users" FromRole="Users" ToRole="Orders" />
+          <NavigationProperty Name="loginType" Relationship="technologyWebSiteDBModel.FK_Users_loginType" FromRole="Users" ToRole="loginType" />
         </EntityType>
         <Association Name="FK_Address_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -533,12 +565,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="technologyWebSiteDBEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="technologyWebSiteDBEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Address" EntityType="Self.Address" />
           <EntitySet Name="Brands" EntityType="Self.Brands" />
           <EntitySet Name="Cart" EntityType="Self.Cart" />
           <EntitySet Name="CartItem" EntityType="Self.CartItem" />
           <EntitySet Name="Categories" EntityType="Self.Categories" />
+          <EntitySet Name="loginType" EntityType="Self.loginType" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" />
           <EntitySet Name="Orders" EntityType="Self.Orders" />
           <EntitySet Name="Payments" EntityType="Self.Payments" />
@@ -585,13 +618,29 @@
             <End Role="Orders" EntitySet="Orders" />
             <End Role="Payments" EntitySet="Payments" />
           </AssociationSet>
+          <AssociationSet Name="FK_Users_loginType" Association="technologyWebSiteDBModel.FK_Users_loginType">
+            <End Role="loginType" EntitySet="loginType" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_Users_loginType">
+          <End Type="technologyWebSiteDBModel.loginType" Role="loginType" Multiplicity="0..1" />
+          <End Type="technologyWebSiteDBModel.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="loginType">
+              <PropertyRef Name="usType" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="usType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="technologyWebSiteDBModelStoreContainer" CdmEntityContainer="technologyWebSiteDBEntities">
+        <EntityContainerMapping StorageEntityContainer="technologyWebSiteDBModelStoreContainer" CdmEntityContainer="technologyWebSiteDBEntities1">
           <EntitySetMapping Name="Address">
             <EntityTypeMapping TypeName="technologyWebSiteDBModel.Address">
               <MappingFragment StoreEntitySet="Address">
@@ -635,6 +684,14 @@
               <MappingFragment StoreEntitySet="Categories">
                 <ScalarProperty Name="catID" ColumnName="catID" />
                 <ScalarProperty Name="catName" ColumnName="catName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="loginType">
+            <EntityTypeMapping TypeName="technologyWebSiteDBModel.loginType">
+              <MappingFragment StoreEntitySet="loginType">
+                <ScalarProperty Name="usType" ColumnName="usType" />
+                <ScalarProperty Name="typeName" ColumnName="typeName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -700,11 +757,11 @@
                 <ScalarProperty Name="usID" ColumnName="usID" />
                 <ScalarProperty Name="usName" ColumnName="usName" />
                 <ScalarProperty Name="usSurname" ColumnName="usSurname" />
-                <ScalarProperty Name="usType" ColumnName="usType" />
                 <ScalarProperty Name="usEmail" ColumnName="usEmail" />
                 <ScalarProperty Name="usPassword" ColumnName="usPassword" />
                 <ScalarProperty Name="usNickname" ColumnName="usNickname" />
                 <ScalarProperty Name="usCreatedDate" ColumnName="usCreatedDate" />
+                <ScalarProperty Name="usType" ColumnName="usType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
